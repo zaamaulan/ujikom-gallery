@@ -1,0 +1,69 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String  @unique @default(cuid())
+  username  String  @unique
+  email     String  @unique
+  password  String
+  full_name String
+  address   String
+
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+  Foto         Foto[]
+  KomentarFoto KomentarFoto[]
+  LikeFoto     LikeFoto[]
+}
+
+model Foto {
+  id               String   @unique @default(cuid())
+  title_foto       String
+  description_foto String
+  upload_date      DateTime @default(now())
+  path             String
+  userId           String?
+  user             User?    @relation(references: [id], fields: [userId], onDelete: Cascade)
+
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt
+  KomentarFoto KomentarFoto[]
+  LikeFoto     LikeFoto[]
+}
+
+model KomentarFoto {
+  id           String   @unique @default(cuid())
+  comment      String
+  fotoId       String?
+  foto         Foto?    @relation(references: [id], fields: [fotoId], onDelete: Cascade)
+  userId       String?
+  user         User?    @relation(references: [id], fields: [userId], onDelete: Cascade)
+  comment_date DateTime @default(now())
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model LikeFoto {
+  id        String   @unique @default(cuid())
+  fotoId    String?
+  foto      Foto?    @relation(references: [id], fields: [fotoId], onDelete: Cascade)
+  userId    String?
+  user      User?    @relation(references: [id], fields: [userId], onDelete: Cascade)
+  like_date DateTime @default(now())
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
