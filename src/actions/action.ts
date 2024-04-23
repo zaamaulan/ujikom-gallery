@@ -52,8 +52,6 @@ export const createNewUser = async (data: {
       throw new Error("Failed to create new user");
     }
 
-    // Redirecting to the sign-in page after successful sign-up
-    // redirect("/auth/sign-in");
   } catch (error) {
     console.error("Error creating user:", error);
     throw error; // Re-throwing the error for higher-level error handling or logging
